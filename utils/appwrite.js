@@ -111,36 +111,33 @@ const databases = new sdk.Databases(client);
 const databaseId = process.env.APPWRITE_DATABASE_ID;
 const collectionId = process.env.APPWRITE_COLLECTION_ID;
 
-function createDocument({ title, content }) {
-  const promise = databases.createDocument(
-    databaseId,
-    collectionId,
-    sdk.ID.unique(),
-    { "Title": title, "Content": content }
-  );
-
-  promise.then(function (response) {
+async function createDocument({ title, content }) {
+  console.log(title);
+  try {
+    const response = await databases.createDocument(
+      databaseId,
+      collectionId,
+      sdk.ID.unique(),
+      { Title: title, Content: content }
+    );
     return { message: "Successfully added!!!" };
-  }, function (error) {
-    return { message: `Error occured: ${error}. Please Try Again!!!` };
-  });
+  } catch (error) {
+    return { message: `Error occurred: ${error}. Please try again!!!` };
+  }
 }
 
-function getAllDocument() {
-  const promise = databases.listDocuments(
-    databaseId,
-    collectionId,
-    [
-      sdk.Query.equal("Title", "Content")
-    ]
-  );
-
-  promise.then(function (response) {
+async function getAllDocument() {
+  try {
+    const response = await databases.listDocuments(
+      databaseId,
+      collectionId
+    );
     return { data: response };
-  }, function (error) {
-    return { message: `Error while fetching data: ${error}, Refresh the page or try again later!!!` };
-  });
+  } catch (error) {
+    return { message: `Error while fetching data: ${error}. Refresh the page or try again later!!!` };
+  }
 }
+
 
 
 module.exports = { createDocument, getAllDocument };
