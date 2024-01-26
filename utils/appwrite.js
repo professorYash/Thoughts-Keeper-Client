@@ -138,6 +138,17 @@ async function getAllDocument() {
   }
 }
 
+async function getSingleDocument(documentId) {
+  try {
+    const response = await databases.getDocument(
+      databaseId,
+      collectionId,
+      documentId
+    );
+    return { data: response };
+  } catch (error) {
+    return { message: `Error while fetching document data: ${error}. Refresh the page or try again later!!!` };
+  }
+}
 
-
-module.exports = { createDocument, getAllDocument };
+module.exports = { createDocument, getAllDocument, getSingleDocument };

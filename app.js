@@ -1,6 +1,6 @@
 require("dotenv").config();
 require("colors");
-const { createDocument, getAllDocument } = require("./utils/appwrite");
+const { createDocument, getAllDocument, getSingleDocument } = require("./utils/appwrite");
 const express = require("express");
 const cors = require("cors");
 
@@ -16,6 +16,17 @@ app.get("/api/notes", async (req, res) => {
     return res.json(response);
   } catch (error) {
     console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get("/api/note/:id", async (req, res) => {
+  try {
+    const documentId = req.params.id;
+    const response = await getSingleDocument(documentId);
+    return res.json({ message: response.message, data: response.data });
+  } catch (error) {
+    console.error(`Error fetching particular note data:`, error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
