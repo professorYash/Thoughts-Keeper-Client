@@ -8,7 +8,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({ origin: process.env.FRONTEND_URL }));
 
 app.get("/api/notes", async (req, res) => {
   try {
@@ -24,7 +24,7 @@ app.post("/api/notes", async (req, res) => {
   const { title, content } = req.body;
   try {
     const response = await createDocument({ title, content });
-    return res.json({ message: response.message });
+    return res.json({ message: response.message, data: response.data });
   } catch (error) {
     console.error('Error saving data:', error);
     res.status(500).json({ error: 'Internal Server Error' });

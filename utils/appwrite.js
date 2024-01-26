@@ -112,7 +112,6 @@ const databaseId = process.env.APPWRITE_DATABASE_ID;
 const collectionId = process.env.APPWRITE_COLLECTION_ID;
 
 async function createDocument({ title, content }) {
-  console.log(title);
   try {
     const response = await databases.createDocument(
       databaseId,
@@ -120,7 +119,7 @@ async function createDocument({ title, content }) {
       sdk.ID.unique(),
       { Title: title, Content: content }
     );
-    return { message: "Successfully added!!!" };
+    return { message: "Successfully added!!!", data: response };
   } catch (error) {
     return { message: `Error occurred: ${error}. Please try again!!!` };
   }
@@ -130,9 +129,10 @@ async function getAllDocument() {
   try {
     const response = await databases.listDocuments(
       databaseId,
-      collectionId
+      collectionId,
+      [sdk.Query.orderDesc("$createdAt")],
     );
-    return { data: response };
+    return { data: response.documents };
   } catch (error) {
     return { message: `Error while fetching data: ${error}. Refresh the page or try again later!!!` };
   }
