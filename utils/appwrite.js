@@ -125,14 +125,26 @@ async function createDocument({ title, content }) {
   }
 }
 
-async function getAllDocument() {
+// With Pagination
+async function getAllDocument(perPageDocuments, pageNo) {
   try {
+    const offsetValue = (pageNo - 1) * perPageDocuments;
     const response = await databases.listDocuments(
       databaseId,
       collectionId,
-      [sdk.Query.orderDesc("$createdAt")],
+      [
+        sdk.Query.orderDesc("$createdAt"),
+        sdk.Query.limit(perPageDocuments),
+        sdk.Query.offset(offsetValue)
+      ],
     );
-    return { data: response.documents };
+
+    const previousValueNull = offsetValue === 0 ? true : false;
+    const nextValueNull = response.documents.length < perPageDocuments ? true : false;
+
+    return {
+      data: response.documents, previousValueNull: previousValueNull, nextValueNull: nextValueNull
+    };
   } catch (error) {
     return { message: `Error while fetching data: ${error}. Refresh the page or try again later!!!` };
   }
